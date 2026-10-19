@@ -9,8 +9,7 @@ st.set_page_config(
 
 st.title("🎵 Descargador de Playlists de Spotify")
 st.write(
-    "Pega el enlace de una playlist o canción de Spotify para descargarla en"
-    " formato MP3."
+    "Pega el enlace de una playlist o canción de Spotify para descargarla."
 )
 
 # Entrada de texto para el enlace
@@ -33,8 +32,15 @@ if st.button("Iniciar Descarga", type="primary"):
         " minutos."
     ):
       try:
-        # Ejecutar spotdl mediante subprocess
-        command = ["spotdl", playlist_url, "--output", output_dir]
+        # Ejecutar spotdl optimizado (formato m4a y 4 descargas simultáneas)
+        command = [
+            "spotdl", 
+            playlist_url, 
+            "--output", output_dir, 
+            "--format", "m4a", 
+            "--threads", "4"
+        ]
+        
         result = subprocess.run(
             command, capture_output=True, text=True, check=True
         )
@@ -51,7 +57,7 @@ if st.button("Iniciar Descarga", type="primary"):
               f"¡Descarga completada! Se descargaron {len(files)} archivos."
           )
 
-          # Comprimir la carpeta en un archivo .zip para facilitar la descarga por el usuario
+          # Comprimir la carpeta en un archivo .zip
           zip_filename = "spotify_playlist"
           shutil.make_archive(zip_filename, "zip", output_dir)
           zip_path = f"{zip_filename}.zip"
